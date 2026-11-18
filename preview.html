@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Pedidos de produto · Interface</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <a href="#" class="brand"
+        ><img src="/assets/logo.png" width="32" height="32" alt="" /><span
+          ><strong>Pedidos de produto</strong><small>Gestão de pedidos</small></span
+        ></a
+      >
+      <nav aria-label="Navegação principal">
+        <p class="nav-label">ÁREA DE TRABALHO</p>
+        <a href="#" class="active" onclick="showList(false);return false"
+          ><img src="/assets/inbox.svg" width="18" height="18" alt="" />Pedidos de produto</a
+        ><a href="#" onclick="showList(true);return false"
+          ><img src="/assets/inbox.svg" width="18" height="18" alt="" />Os meus pedidos</a
+        >
+      </nav>
+      <div class="user-card">
+        <span class="avatar">JM</span
+        ><span><strong>João Martins</strong><small>Cliente</small></span>
+      </div>
+    </aside>
+    <header class="topbar">
+      <div class="breadcrumb">Pedidos de produto <span>/</span><strong>Cliente</strong></div>
+      <div class="header-actions">
+        <button
+          class="signout"
+          onclick="alert('Pré-visualização da interface. A autenticação ainda está em desenvolvimento.')"
+        >
+          Terminar sessão</button
+        ><span class="product-pill"
+          ><img src="/assets/product-dot.svg" width="8" height="8" alt="" />Gestão de
+          ferramentas</span
+        >
+      </div>
+    </header>
+    <main class="main" id="main"></main>
+    <script>
+      const rows = [
+        ['P-041', 'Pesquisa de ferramentas', 'Submetido', 'Aurora', 12],
+        ['P-038', 'Atalhos de teclado', 'Priorizado', 'Empresa Horizonte', 8],
+        ['P-035', 'Exportação de dados', 'Concluído', 'Aurora', 19],
+        ['P-042', 'Notificações por equipa', 'Priorizado', 'Empresa Horizonte', 6],
+        ['P-031', 'Importação de listas', 'Priorizado', 'Aurora', 7],
+        ['P-029', 'Melhorar exportação', 'Concluído', 'Aurora', 11],
+      ];
+      const main = document.getElementById('main');
+      function badge(status) {
+        return (
+          '<span class="badge ' +
+          (status === 'Concluído' ? 'success' : status === 'Priorizado' ? 'purple' : 'neutral') +
+          '">' +
+          status +
+          '</span>'
+        );
+      }
+      function table(mine = false, q = '') {
+        const visible = rows.filter(
+          (r) =>
+            (!mine || r[3] === 'Aurora') &&
+            r.join(' ').toLocaleLowerCase('pt').includes(q.toLocaleLowerCase('pt')),
+        );
+        return visible.length
+          ? '<div class="table-scroll"><table><thead><tr><th>Pedido</th><th>Estado</th><th>Autor</th><th class="number">Votos</th><th>Ação</th></tr></thead><tbody>' +
+              visible
+                .map(
+                  (r) =>
+                    '<tr><td>' +
+                    r[0] +
+                    ' · ' +
+                    r[1] +
+                    '</td><td>' +
+                    badge(r[2]) +
+                    '</td><td>' +
+                    r[3] +
+                    '</td><td class="number">' +
+                    r[4] +
+                    '</td><td><button class="button secondary consult" onclick="showDetail(\'' +
+                    r[0] +
+                    '\')">Consultar</button></td></tr>',
+                )
+                .join('') +
+              '</tbody></table></div>'
+          : '<div class="empty"><h3>Nenhum pedido encontrado</h3><p>Experimente outra pesquisa.</p></div>';
+      }
+      function showList(mine = false) {
+        main.innerHTML =
+          '<div class="heading"><h1>' +
+          (mine ? 'Os meus pedidos' : 'Pedidos de produto') +
+          '</h1><p>' +
+          (mine
+            ? 'Consulte os pedidos que submeteu e acompanhe a sua evolução.'
+            : 'Descubra pedidos, acompanhe os estados e apoie as necessidades da sua empresa.') +
+          '</p></div><div><button class="button primary" onclick="showNew()">Novo pedido</button></div><form class="search" id="search-form"><label class="field">Pesquisar pedidos<input id="search" placeholder="Pesquise por título ou palavra-chave" maxlength="100"></label><button class="button secondary">Pesquisar</button></form><section class="card"><h2>Pedidos</h2><div id="results">' +
+          table(mine) +
+          '</div></section>';
+        document.getElementById('search-form').onsubmit = (e) => {
+          e.preventDefault();
+          document.getElementById('results').innerHTML = table(
+            mine,
+            document.getElementById('search').value,
+          );
+        };
+        document
+          .querySelectorAll('nav a')
+          .forEach((a, i) => a.classList.toggle('active', i === (mine ? 1 : 0)));
+      }
+      function showNew() {
+        main.innerHTML =
+          '<div class="heading"><h1>Novo pedido</h1><p>Preencha os dados e escolha em nome de quem pretende submeter o pedido.</p></div><form id="new-form"><section class="card form-card"><h2>Informação do pedido</h2><label class="field">Produto selecionado *<select><option>Gestão de ferramentas</option></select></label><label class="field">Título *<input required maxlength="100" placeholder="Dê um título claro à sua ideia"></label><label class="field">Descrição *<textarea required maxlength="2000" rows="5" placeholder="Descreva o que precisa e como isso ajudaria a sua equipa."></textarea></label><label class="field">Categoria<select><option>Não classificada</option><option>Usabilidade</option><option>Exportação</option></select></label><fieldset><legend>Submeter em nome de</legend><div class="radio-options"><label><input type="radio" name="author" checked>Empresa · Aurora</label><label><input type="radio" name="author">Em nome próprio · João Martins</label></div><p class="muted small">A submissão fica sempre registada com o seu nome.</p></fieldset></section><div class="actions form-actions"><button class="button primary">Submeter pedido</button><button class="button secondary" type="button" onclick="showList()">Cancelar</button></div></form>';
+        document.getElementById('new-form').onsubmit = (e) => {
+          e.preventDefault();
+          alert(
+            'Esta é uma pré-visualização da interface. A gravação no MongoDB está em desenvolvimento.',
+          );
+        };
+      }
+      function showDetail(code) {
+        const r = rows.find((r) => r[0] === code);
+        main.innerHTML =
+          '<a class="back-link" href="#" onclick="showList();return false">‹ Pedidos <span>/ ' +
+          r[0] +
+          ' · ' +
+          r[1] +
+          '</span></a><div class="heading"><h1>' +
+          r[1] +
+          '</h1><p>' +
+          r[0] +
+          ' · Autor: ' +
+          r[3] +
+          ' · Submetido por ' +
+          (r[3] === 'Aurora' ? 'João Martins' : 'Inês Costa') +
+          '</p></div><div class="tabs"><button aria-selected="true">Detalhe</button></div><section class="card"><div class="card-heading"><h2>Progresso do pedido</h2>' +
+          badge(r[2]) +
+          '</div><ol class="timeline">' +
+          [
+            'Submetido',
+            'Em triagem',
+            'Confirmado',
+            'Aprovado',
+            'Priorizado',
+            'Atribuído',
+            'Em progresso',
+            'Concluído',
+          ]
+            .map(
+              (s) =>
+                '<li class="' +
+                (s === r[2] ? 'current' : '') +
+                '"><span class="step-dot">' +
+                (s === r[2] ? '●' : '') +
+                '</span><span>' +
+                s +
+                '</span></li>',
+            )
+            .join('') +
+          '</ol></section><section class="card"><h2>Estado e descrição</h2><p class="muted">' +
+          r[2] +
+          ' · Produto: Gestão de ferramentas · Categoria: Usabilidade</p><p>' +
+          (r[0] === 'P-041'
+            ? 'Pesquisar ferramentas pelo nome para as encontrar mais rapidamente.'
+            : r[1] + '.') +
+          '</p></section>';
+      }
+      showList();
+    </script>
+  </body>
+</html>

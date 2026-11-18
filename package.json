@@ -1,0 +1,41 @@
+{
+  "name": "pedidos-de-produto",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5174",
+    "build": "tsc --noEmit && node scripts/build.mjs",
+    "start": "vite preview --host 127.0.0.1 --port 5174",
+    "test": "tsx --test client/tests/*.test.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "bd": "tsx bd/iniciar.ts",
+    "bd:api": "tsx bd/iniciar.ts --sem-interface",
+    "bd:criar": "tsx bd/ferramentas.ts criar",
+    "bd:exportar": "tsx bd/ferramentas.ts exportar",
+    "bd:importar": "tsx bd/ferramentas.ts importar",
+    "bd:repor": "tsx bd/ferramentas.ts repor",
+    "bd:ver": "tsx bd/ver.ts",
+    "test:bd": "tsx --test bd/testes/*.test.ts"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.2.8",
+    "mongodb": "^6.22.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.6"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.1.0",
+    "esbuild": "^0.28.2",
+    "mongodb-memory-server": "^10.4.3",
+    "prettier": "3.6.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.2"
+  }
+}

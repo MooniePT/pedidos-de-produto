@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.npm-cache/
+.data/
+package-lock.json
+client/public/assets/
+test-results/
+playwright-report/
+.env
+.env.*
